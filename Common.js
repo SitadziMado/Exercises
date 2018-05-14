@@ -18,3 +18,11 @@ function formatSeconds(value) {
 
     return min + ':' + sec;
 }
+
+function odd(number) {
+    return number % 2 === 1;
+}
+
+function even(number) {
+    return !odd(number);
+}

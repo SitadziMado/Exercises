@@ -91,6 +91,17 @@ Settings.prototype.addButton = function (name, text, onclick) {
     this._addCtl(name, ctl);
 };
 
+Settings.prototype.addStateButton = function (name, text, states, onclick) {
+    var ctl = new StateButton({
+        parent: this.parent,
+        name: name,
+        value: text,
+        onclick: onclick
+    });
+
+    this._addCtl(name, ctl);
+};
+
 function Control(config) {
     if (config.name === '') {
         throw new Error('Элементу управления требуется имя');
@@ -265,6 +276,13 @@ function Button(config) {
 }
 
 inherit(Button, Control);
+
+function StateButton(config) {
+    config.type = 'button';
+    Control.apply(this, arguments);
+}
+
+inherit(StateButton, Control);
 
 /* var settings = new Settings({
     parent: '#div-controls'

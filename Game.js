@@ -271,7 +271,7 @@ function Game(config) {
                     return time;
                 },
                 set: function (value) {
-                    time = value * 1000;
+                    time = value;
                 }
             },
             grid: {
@@ -349,7 +349,8 @@ Game.prototype.fillInfo = function () {
         'Размер поля: ',
         [ 'Маленький', 'Средний', 'Большой' ],
         function () {
-            self.scale(+this.value);
+            //self.scale(+this.value);
+            swal('Пока не реализовано');
             self.generate();
         }
     );
@@ -361,6 +362,26 @@ Game.prototype.fillInfo = function () {
         function () {
             self.time = +this.value;
             self.generate();
+        }
+    );
+
+    var startIdx = 0;
+    var label = [ 'Начать', 'Остановить' ];
+    
+    this.settings.addButton(
+        'start',
+        label[0],
+        function () {
+            startIdx = (startIdx + 1) % label.length;
+            this.value = label[startIdx];
+
+            if (startIdx) {
+                self.start(function () {
+                    swal(self.settings.controls.statistics.value);
+                });
+            } else {
+                self.cancel();
+            }
         }
     );
 

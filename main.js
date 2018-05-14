@@ -23,8 +23,8 @@ function changeGame(name) {
         infoBlock: '#div-info',
         width: 24,
         height: 18,
-        time: 120,
-        density: 10,
+        time: 60,
+        density: 6,
         symbols: 'latin'
     };
 

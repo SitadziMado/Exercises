@@ -12,11 +12,15 @@ function BaseSymbolGame(config) {
                     return generator;
                 },
                 set: function (value) {
-                    generator = rnd[value];
+                    var f = rnd[value];
 
-                    if (!generator) {
+                    if (!f) {
                         throw new Error('Недопустимый тип символов');
                     }
+
+                    generator = function () {
+                        return f().toString();
+                    };
                 }
             },
             symbols: {

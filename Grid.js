@@ -17,6 +17,11 @@ function Cell(td, x, y) {
                 set: function (value) {
                     td.html(value);
                 }
+            },
+            td: {
+                get: function () {
+                    return td;
+                }
             }
         }
     );
@@ -34,6 +39,20 @@ function Cell(td, x, y) {
         }
     };
 }
+
+Cell.constructor = Cell;
+
+Cell.prototype.markMissed = function () {
+    this.td.addClass('miss');
+};
+
+Cell.prototype.markWrong = function () {
+    this.td.addClass('wrong');
+};
+
+Cell.prototype.markRight = function () {
+    this.td.addClass('right');
+};
 
 function Grid(parentId) {
     if (typeof parentId !== 'string') {
@@ -105,3 +124,5 @@ function Grid(parentId) {
         }
     };
 }
+
+Grid.constructor = Grid;

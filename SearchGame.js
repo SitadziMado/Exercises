@@ -27,7 +27,7 @@ function SearchGame(config) {
     function check(eq) {
         var isFound = false;
         self.selection(function () {
-            if (~self.goals.indexOf(self.text)) {
+            if (~self.goals.indexOf(this.text)) {
                 isFound = true;
             }
         });
@@ -38,7 +38,7 @@ function SearchGame(config) {
     }
 
     // ToDo: обобщить с "Суммой"
-    this.addControl(13, function () {
+    this.addControl('1'.charCodeAt(0), function () {
         var result = check.apply(self, [true]);
 
         if (result) {
@@ -50,7 +50,7 @@ function SearchGame(config) {
         self.advance(self.selectionHeight, true);
     });
 
-    this.addControl(' '.charCodeAt(0), function () {
+    this.addControl('2'.charCodeAt(0), function () {
         var result = check.apply(self);
 
         if (!result) {
@@ -110,8 +110,8 @@ SearchGame.prototype.generate = function (width, height) {
         this.advance(this.selectionHeight, true);
     }
 
-    this.description = 'Задача - нажимать клавишу &lt;Enter&gt;, если в выделении есть символ "' +
-        this.goals[0] + '" или "' + this.goals[1] + '", нажимать &lt;Пробел&gt; иначе.';
+    this.description = 'Задача - нажимать клавишу &lt;1&gt;, если в выделении есть символ "' +
+        this.goals[0] + '" или "' + this.goals[1] + '", нажимать &lt;2&gt; иначе.';
 
     this.selectionX = 0;
     this.selectionY = 0;
