@@ -36,7 +36,9 @@ function TripleGame(config) {
             }
         }
 
-        self.advance(self.selectionWidth, false);
+        if (!self.advance(self.selectionWidth, false)) {
+            self.generate();
+        }
     }
 
     this.addControl('1'.charCodeAt(0), function () {

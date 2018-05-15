@@ -24,40 +24,55 @@ function SearchGame(config) {
 
     BaseSymbolGame.apply(this, arguments);
 
-    function check(eq) {
+    function match(eq) {
         var isFound = false;
-        self.selection(function () {
-            if (~self.goals.indexOf(this.text)) {
-                isFound = true;
-            }
-        });
+        var selected = [];
 
         eq = eq || false;
 
-        return eq === isFound;
-    }
+        self.selection(function () {
+            if (~self.goals.indexOf(this.text)) {
+                isFound = true;
+                selected.push(this);
+            }
+        });
 
-    // ToDo: обобщить с "Суммой"
-    this.addControl('1'.charCodeAt(0), function () {
-        var result = check.apply(self, [true]);
+        var markFunc = function () {};
 
-        if (result) {
-            self.updateStatistics(true);
+        if (eq) {
+            if (isFound) {
+                self.updateStatistics(true);
+                markFunc = Cell.prototype.markRight;
+            } else {
+                self.updateStatistics(false);
+                markFunc = Cell.prototype.markWrong;
+            }
         } else {
-            self.updateStatistics(false);
+            if (isFound) {
+                self.updateStatistics('miss');
+                markFunc = Cell.prototype.markMissed;
+            } else {
+                //
+            }
         }
 
-        self.advance(self.selectionHeight, true);
+        for (var a in selected) {
+            if (selected.hasOwnProperty(a)) {
+                markFunc.apply(selected[a]);
+            }
+        }
+
+        if (!self.advance(self.selectionHeight, true)) {
+            self.generate();
+        }
+    }
+
+    this.addControl('1'.charCodeAt(0), function () {
+        var result = match.apply(self, [true]);
     });
 
     this.addControl('2'.charCodeAt(0), function () {
-        var result = check.apply(self);
-
-        if (!result) {
-            self.updateStatistics('miss');
-        }
-
-        self.advance(self.selectionHeight, true);
+        var result = match.apply(self);
     });
 }
 
@@ -74,7 +89,7 @@ SearchGame.prototype.fillInfo = function () {
         { 6: 'Мало', 9: 'Средне', 12: 'Много' },
         function () {
             self.density = +this.value;
-            self.generate();
+            self.restart();
         }
     );
 };

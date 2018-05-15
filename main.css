@@ -1,7 +1,3 @@
-td.highlighted {
-    color: lime;
-}
-
 td.right {
     color: greenyellow;
 }
@@ -12,6 +8,10 @@ td.miss {
 
 td.wrong {
     color: red;
+}
+
+td.highlighted {
+    color: lime;
 }
 
 table {
@@ -54,4 +54,10 @@ li.menu a:hover {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+button.control {
+    width: 64px;
+    height: 64px;
+    font: 16pt monospace;
 }

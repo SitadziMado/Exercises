@@ -1,6 +1,8 @@
 'use strict';
 
 function Settings(config) {
+    config.removeBr = config.removeBr || false;
+
     var parent = $(config.parent);
 
     if (!parent) {
@@ -19,6 +21,11 @@ function Settings(config) {
             controls: {
                 get: function () {
                     return controls;
+                }
+            },
+            removeBr: {
+                get: function () {
+                    return config.removeBr;
                 }
             }
         }
@@ -40,8 +47,22 @@ Settings.constructor = Settings;
 Settings.prototype._addCtl = function (name, control) {
     if (name && control) {
         this.controls[name] = control;
+
+        if (!this.removeBr) {
+            this.parent.append('<br>');
+        }
     } else {
         throw new Error('Имя элемента и сам элемент не должны быть пустыми');
+    }
+};
+
+Settings.prototype.removeControl = function (name) {
+    if (name) {
+        var ctl = this.controls[name];
+
+        if (ctl) {
+            ctl.control.remove();
+        }
     }
 };
 
@@ -123,8 +144,6 @@ function Control(config) {
     parent.append('<' + config.type + '>');
     var control = parent.children().last();
     control.attr('id', config.name);
-
-    parent.append('<br>');
 
     var attrs = config.attributes;
 
@@ -222,6 +241,10 @@ Control.prototype._refresh = function () {
 
 Control.prototype.changed = function () {
     this.onchange.apply(this, []);
+};
+
+Control.prototype.disable = function (enable) {
+    this.control.prop('disabled', !(enable || false));
 };
 
 function Label(config) {

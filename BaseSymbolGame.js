@@ -1,6 +1,8 @@
 'use strict';
 
 function BaseSymbolGame(config) {
+    config.symbols = config.symbols || 'cyrillic';
+
     var self = this;
     var rnd = new Random();
     var generator;

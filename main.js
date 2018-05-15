@@ -21,23 +21,17 @@ function changeGame(name) {
     var config = {
         gameBlock: '#div-grid',
         infoBlock: '#div-info',
-        width: 24,
-        height: 18,
+        width: 18,
+        height: 12,
         time: 60,
-        density: 6,
-        symbols: 'latin'
+        density: 6
     };
 
     if (name === 'SearchGame') {
-        config.symbols = 'latin';
-        config.width = 48;
-        config.height = 30;
         game = new SearchGame(config);
     } else if (name === 'SumGame') {
-        config.goal = 10;
         game = new SumGame(config);
     } else if (name === 'TripleGame') {
-        config.symbols = 'latin';
         game = new TripleGame(config);
     }
 

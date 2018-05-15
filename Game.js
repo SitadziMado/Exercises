@@ -82,110 +82,6 @@ function Game(config) {
         divInfo.append('<p id="statistics-label">');
     }
 
-    this.clear = function () {
-        self.cancel();
-        grid.clear();
-        divInfo.empty();
-        settings.clear();
-    };
-
-    this.addControl = function (key, f) {
-        checkControlKey(key);
-
-        if (typeof f === 'function') {
-            controls[key] = f;
-        }
-    };
-
-    this.removeControl = function (key) {
-        checkControlKey(key);
-
-        if (controls[key]) {
-            delete controls[key];
-        }
-    };
-
-    this.changeControl = function (oldKey, key) {
-        checkControlKey(oldKey);
-
-        if (controls[oldKey]) {
-            var oldF = controls[oldKey];
-            delete controls[oldKey];
-            controls[key] = oldF;
-        }
-    };
-
-    this.aliasControl = function (key, alias) {
-        checkControlKey(key);
-
-        if (controls[key] && !controls[alias]) {
-            controls[alias] = controls[key];
-        }
-    };
-
-    this.dispatchControl = function (key) {
-        if (isStarted) {
-            checkControlKey(key);
-
-            var result = undefined;
-            var ctrl = controls[key];
-
-            if (ctrl) {
-                ctrl.apply(self)
-            }
-
-            return result;
-        }
-    };
-
-    this.start = function (finished) {
-        if (!isStarted) {
-            isStarted = true;
-
-            statistics = {};
-
-            var args = [];
-            for (var i = 1; i < arguments.length; ++i) {
-                args.push(arguments[i]);
-            }
-
-            var timeLeft = self.time;
-
-            timer = setInterval(
-                function () {
-                    if (timeLeft <= 0) {
-                        self.cancel();
-                        finished.apply(self, args);
-                    } else {
-                        --timeLeft;
-                        self.settings.controls.timeLeft.value =
-                            formatSeconds(timeLeft);
-                    }
-                }, 1000 // секунда
-            );
-        }
-    };
-
-    this.cancel = function () {
-        if (isStarted) {
-            clearInterval(timer);
-            isStarted = false;
-        }
-    };
-
-    this.updateStatistics = function (oneMore) {
-        if (statistics[oneMore]) {
-            ++statistics[oneMore];
-        } else {
-            statistics[oneMore] = 1;
-        }
-
-        this.settings.controls.statistics.value =
-            'Правильные: ' + (statistics[true] || '0') + '<br>' +
-            'Неправильные: ' + (statistics[false] || '0') + '<br>' +
-            'Пропущено: ' + (statistics['miss'] || '0');
-    };
-
     Object.defineProperties(
         this, {
             selectionX: {
@@ -298,6 +194,131 @@ function Game(config) {
         }
     );
 
+    var gameButtons = new Settings({ parent: '#div-controls', removeBr: true });
+
+    this.clear = function () {
+        self.cancel();
+        grid.clear();
+        divInfo.empty();
+        settings.clear();
+        gameButtons.clear();
+    };
+
+    this.addControl = function (key, f) {
+        checkControlKey(key);
+
+        if (typeof f === 'function') {
+            controls[key] = f;
+
+            var chr = String.fromCharCode(key);
+            var name = 'ctl-' + chr;
+
+            gameButtons.addButton(
+                name,
+                chr,
+                function () {
+                    self.dispatchControl(key);
+                }
+            );
+
+            gameButtons.controls[name].control.addClass('control');
+        } else {
+            throw new Error('Некорретная callback-функция');
+        }
+    };
+
+    this.removeControl = function (key) {
+        checkControlKey(key);
+
+        if (controls[key]) {
+            delete controls[key];
+            gameButtons.removeControl(
+                'ctl-' + String.fromCharCode(key)
+            );
+        }
+    };
+
+    this.changeControl = function (oldKey, key) {
+        checkControlKey(oldKey);
+
+        if (controls[oldKey]) {
+            var oldF = controls[oldKey];
+            delete controls[oldKey];
+            controls[key] = oldF;
+        }
+    };
+
+    this.aliasControl = function (key, alias) {
+        checkControlKey(key);
+
+        if (controls[key] && !controls[alias]) {
+            controls[alias] = controls[key];
+        }
+    };
+
+    this.dispatchControl = function (key) {
+        if (isStarted) {
+            checkControlKey(key);
+
+            var result = undefined;
+            var ctrl = controls[key];
+
+            if (ctrl) {
+                ctrl.apply(self)
+            }
+
+            return result;
+        }
+    };
+
+    this.start = function (finished) {
+        if (!isStarted) {
+            isStarted = true;
+
+            statistics = {};
+
+            var args = [];
+            for (var i = 1; i < arguments.length; ++i) {
+                args.push(arguments[i]);
+            }
+
+            var timeLeft = self.time;
+
+            timer = setInterval(
+                function () {
+                    if (timeLeft <= 0) {
+                        self.cancel();
+                        finished.apply(self, args);
+                    } else {
+                        --timeLeft;
+                        self.settings.controls.timeLeft.value =
+                            formatSeconds(timeLeft);
+                    }
+                }, 1000 // секунда
+            );
+        }
+    };
+
+    this.cancel = function () {
+        if (isStarted) {
+            clearInterval(timer);
+            isStarted = false;
+        }
+    };
+
+    this.updateStatistics = function (oneMore) {
+        if (statistics[oneMore]) {
+            ++statistics[oneMore];
+        } else {
+            statistics[oneMore] = 1;
+        }
+
+        this.settings.controls.statistics.value =
+            'Правильные: ' + (statistics[true] || '0') + '<br>' +
+            'Неправильные: ' + (statistics[false] || '0') + '<br>' +
+            'Пропущено: ' + (statistics['miss'] || '0');
+    };
+
     this._grid = grid;
 
     this.fillInfo();
@@ -307,24 +328,39 @@ function Game(config) {
 Game.prototype.constructor = Game;
 
 Game.prototype.advance = function (amount, vertical) {
+    var result = true;
     amount = amount || 1;
     vertical = vertical || false;
 
     if (vertical) {
         if (this.selectionY + amount > this.height - this.selectionHeight) {
             this.selectionY = 0;
-            this.selectionX += this.selectionWidth;
+
+            if (this.selectionX + this.selectionWidth >= this.width) {
+                this.selectionX = 0;
+                result = false;
+            } else {
+                this.selectionX += this.selectionWidth;
+            }
         } else {
             this.selectionY += amount;
         }
     } else {
         if (this.selectionX + amount > this.width - this.selectionWidth) {
             this.selectionX = 0;
-            this.selectionY += this.selectionHeight;
+
+            if (this.selectionY + this.selectionHeight >= this.height) {
+                this.selectionY = 0;
+                result = false;
+            } else {
+                this.selectionY += this.selectionHeight;
+            }
         } else {
             this.selectionX += amount;
         }
     }
+
+    return result;
 };
 
 Game.prototype.selection = function (f) {
@@ -349,9 +385,9 @@ Game.prototype.fillInfo = function () {
         'Размер поля: ',
         [ 'Маленький', 'Средний', 'Большой' ],
         function () {
-            //self.scale(+this.value);
-            swal('Пока не реализовано');
-            self.generate();
+            var width = 18 + this.value * 12;
+            var height = 12 + this.value * 6;
+            self.restart(width, height);
         }
     );
 
@@ -361,27 +397,16 @@ Game.prototype.fillInfo = function () {
         { 60: 'Минута', 120: '2 минуты', 180: '3 минуты', 300: '5 минут' },
         function () {
             self.time = +this.value;
-            self.generate();
+            self.restart();
         }
     );
 
-    var startIdx = 0;
-    var label = [ 'Начать', 'Остановить' ];
-    
     this.settings.addButton(
         'start',
-        label[0],
+        'Начать игру',
         function () {
-            startIdx = (startIdx + 1) % label.length;
-            this.value = label[startIdx];
-
-            if (startIdx) {
-                self.start(function () {
-                    swal(self.settings.controls.statistics.value);
-                });
-            } else {
-                self.cancel();
-            }
+            self.settings.controls.start.disable();
+            self.start();
         }
     );
 
@@ -389,14 +414,12 @@ Game.prototype.fillInfo = function () {
         'update',
         'Обновить',
         function () {
-            self.generate();
+            self.restart();
         }
     );
 };
 
 Game.prototype.generate = function (width, height) {
-    this.cancel();
-
     width = width || this.width;
     height = height || this.height;
 
@@ -404,7 +427,13 @@ Game.prototype.generate = function (width, height) {
     this.width = width || 1;
     this.height = height || 1;
     this.grid.generate(this.width, this.height);
+    this.settings.controls.start.disable(true);
 
     this.selectionX = 0;
     this.selectionY = 0;
+};
+
+Game.prototype.restart = function (width, height) {
+    this.cancel();
+    this.generate.apply(this, arguments);
 };

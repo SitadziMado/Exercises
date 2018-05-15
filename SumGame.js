@@ -6,7 +6,6 @@ function SumGame(config) {
     config.chances = 55;
 
     var self = this;
-    var goal = config.goal;
 
     Object.defineProperties(
         this, {
@@ -23,38 +22,56 @@ function SumGame(config) {
 
     Game.apply(this, arguments);
 
-    function check(eq) {
+    function match(eq) {
+        var selected = [];
         var sum = 0;
-        self.selection(function () {
-            sum += +this.text;
-        });
 
         eq = eq || false;
 
-        return eq === (sum === goal);
+        self.selection(function () {
+            sum += +this.text;
+            selected.push(this);
+        });
+
+        var match = sum === this.goals[0];
+        var markFunc = function () {};
+        var amount = 1;
+
+        if (eq) {
+            if (match) {
+                self.updateStatistics(true);
+                markFunc = Cell.prototype.markRight;
+                amount = 2;
+            } else {
+                self.updateStatistics(false);
+                markFunc = Cell.prototype.markWrong;
+            }
+        } else {
+            if (match) {
+                self.updateStatistics('miss');
+                markFunc = Cell.prototype.markMissed;
+            } else {
+                //
+            }
+        }
+
+        for (var a in selected) {
+            if (selected.hasOwnProperty(a)) {
+                markFunc.apply(selected[a]);
+            }
+        }
+
+        if (!self.advance(amount)) {
+            self.generate();
+        }
     }
 
     this.addControl('1'.charCodeAt(0), function () {
-        var result = check.apply(this, [true]);
-
-        if (result) {
-            self.updateStatistics(true);
-            self.advance();
-        } else {
-            self.updateStatistics(false);
-        }
-
-        self.advance();
+        var result = match.apply(this, [true]);
     });
 
     this.addControl('2'.charCodeAt(0), function () {
-        var result = check.apply(this);
-
-        if (!result) {
-            self.updateStatistics('miss');
-        }
-
-        self.advance();
+        var result = match.apply(this);
     });
 }
 
@@ -91,6 +108,7 @@ SumGame.prototype.generate = function (width, height) {
     }
 
     var idx = 0;
+
     // Заполним поле
     this.grid.rectangleSelection(
         0,
@@ -116,7 +134,7 @@ SumGame.prototype.fillInfo = function () {
             75: 'Высокая'
         }, function () {
             self.chances = +this.value;
-            self.generate();
+            self.restart();
         }
-    )
+    );
 };
