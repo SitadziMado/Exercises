@@ -104,13 +104,26 @@ SearchGame.prototype.generate = function (width, height) {
     for (var i = 0; i < times; ++i) {
         var density = this.density;
         var fillers = [];
+        var hasDesired = false;
 
         for (var j = 0; j < this.selectionWidth * this.selectionHeight; ++j) {
             if (density) {
-                fillers.push(this.generator());
+                var cur = this.generator();
+
+                if (~this.goals.indexOf(cur)) {
+                    hasDesired = true;
+                }
+
+                fillers.push(cur);
                 --density;
             } else {
                 fillers.push('');
+            }
+        }
+
+        if (!hasDesired) {
+            if (rnd.yesNo(25)) {
+                fillers[0] = rnd.choice(this.goals);
             }
         }
 

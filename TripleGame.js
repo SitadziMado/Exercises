@@ -64,6 +64,7 @@ TripleGame.prototype.generate = function (width, height) {
     BaseSymbolGame.prototype.generate.apply(this, arguments);
 
     var self = this;
+    var rnd = new Random();
 
     // Заполним поле
     this.grid.rectangleSelection(
@@ -72,7 +73,7 @@ TripleGame.prototype.generate = function (width, height) {
         this.width,
         this.height,
         function () {
-            this.text = self.generator();
+            this.text = rnd.yesNo(25) ? rnd.choice(self.goals) : self.generator();
         }
     );
 
