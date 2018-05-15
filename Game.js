@@ -428,6 +428,7 @@ Game.prototype.generate = function (width, height) {
     this.height = height || 1;
     this.grid.generate(this.width, this.height);
     this.settings.controls.start.disable(true);
+    this.settings.controls.timeLeft.value = formatSeconds(this.time);
 
     this.selectionX = 0;
     this.selectionY = 0;

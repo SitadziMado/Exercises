@@ -72,7 +72,7 @@ BaseSymbolGame.prototype.fillInfo = function () {
             digit: 'Цифры'
         }, function () {
             self.symbols = this.value;
-            self.generate();
+            self.restart();
         }
     );
 };
