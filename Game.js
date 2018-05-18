@@ -377,7 +377,7 @@ Game.prototype.fillInfo = function () {
     var self = this;
 
     this.settings.addLabel('caption', this.description);
-    this.settings.addLabel('statistics', 'Статистика: ');
+    this.settings.addLabel('statistics', 'Статистика: ', 'задание не начато');
     this.settings.addLabel('timeLeft', 'Осталось времени: ', formatSeconds(this.time));
 
     this.settings.addComboBox(
@@ -406,7 +406,10 @@ Game.prototype.fillInfo = function () {
         'Начать игру',
         function () {
             self.settings.controls.start.disable();
-            self.start();
+            self.start(function () {
+                swal(self.settings.controls.statistics.value);
+                self.restart();
+            });
         }
     );
 
