@@ -597,4 +597,5 @@ Game.prototype.resetField = function () {
 Game.prototype.restart = function (width, height) {
     this.cancel();
     this.generate.apply(this, arguments);
+    this.settings.controls.start.enable();
 };

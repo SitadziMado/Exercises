@@ -247,6 +247,10 @@ Control.prototype.disable = function (enable) {
     this.control.prop('disabled', !(enable || false));
 };
 
+Control.prototype.enable = function () {
+    this.disable(true);
+};
+
 function Label(config) {
     config.type = 'span';
     Control.apply(this, arguments);
