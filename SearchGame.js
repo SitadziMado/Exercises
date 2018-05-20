@@ -143,4 +143,6 @@ SearchGame.prototype.generate = function (width, height) {
 
     this.selectionX = 0;
     this.selectionY = 0;
+
+    this.resetField();
 };

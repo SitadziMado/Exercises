@@ -1,6 +1,33 @@
-td.right {
-    color: greenyellow;
+@font-face {
+    font-family: Xtrusion;
+    src: url(fonts/0.ttf) format("truetype");
 }
+
+@font-face {
+    font-family: Craftism;
+    src: url(fonts/1.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: Energy Dimension;
+    src: url(fonts/2.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: Extrude;
+    src: url(fonts/3.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: Country Western;
+    src: url(fonts/4.ttf) format("truetype");
+}
+
+* {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 16px;
+}
+
 
 td.miss {
     color: orange;
@@ -8,6 +35,10 @@ td.miss {
 
 td.wrong {
     color: red;
+}
+
+td.right {
+    color: greenyellow;
 }
 
 td.highlighted {
@@ -18,10 +49,11 @@ table {
     border-collapse: collapse;
 }
 
-td {
+#div-grid td {
     border: solid 1px;
     table-layout: fixed;
-    width: 16px;
+    width: 20px;
+    height: 20px;
     text-align: center;
 }
 
@@ -60,4 +92,24 @@ button.control {
     width: 64px;
     height: 64px;
     font: 16pt monospace;
+}
+
+.font-0 {
+    font-family: Xtrusion, Arial, Helvetica, sans-serif;
+}
+
+.font-1 {
+    font-family: Craftism, "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.font-2 {
+    font-family: "Energy Dimension", Georgia, sans-serif;
+}
+
+.font-3 {
+    font-family: Extrude, Verdana, Geneva, sans-serif
+}
+
+.font-4 {
+    font-family: "Country Western", "Times New Roman", Times, serif;
 }

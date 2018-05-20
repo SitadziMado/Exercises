@@ -1,7 +1,7 @@
 'use strict';
 
 function BaseSymbolGame(config) {
-    config.symbols = config.symbols || 'cyrillic';
+    config.symbols = config.symbols || 'latin';
 
     var self = this;
     var rnd = new Random();
@@ -67,9 +67,9 @@ BaseSymbolGame.prototype.fillInfo = function () {
     this.settings.addComboBox(
         'symbols',
         'Символы: ', {
-            cyrillic: 'Кириллица',
             latin: 'Латиница',
-            digit: 'Цифры'
+            digit: 'Цифры',
+            cyrillic: 'Кириллица'
         }, function () {
             self.symbols = this.value;
             self.restart();

@@ -4,23 +4,38 @@ function Cell(td, x, y) {
 
     var isHighlighted = false;
 
-    this.td = td;
-    this.x = x;
-    this.y = y;
+    td.append('<span>');
+    var span = td.children();
 
     Object.defineProperties(
         this, {
             text: {
                 get: function () {
-                    return td.html();
+                    return span.html(); // td.html();
                 },
                 set: function (value) {
-                    td.html(value);
+                    span.html(value.toString());
+                    // td.html(value);
                 }
             },
             td: {
                 get: function () {
                     return td;
+                }
+            },
+            span: {
+                get: function () {
+                    return span;
+                }
+            },
+            x: {
+                get: function () {
+                    return x;
+                }
+            },
+            y: {
+                get: function () {
+                    return y;
                 }
             }
         }
@@ -59,9 +74,25 @@ function Grid(parentId) {
         throw new Error('ИД родителя должен быть строкой');
     }
 
+    var self = this;
     var parent = $(parentId);
     var grid = [];
     var width, height;
+
+    Object.defineProperties(
+        this, {
+            width: {
+                get: function () {
+                    return width;
+                }
+            },
+            height: {
+                get: function () {
+                    return height;
+                }
+            }
+        }
+    );
 
     var isCreated = false;
 
@@ -95,7 +126,7 @@ function Grid(parentId) {
                 tr.children().each(function () {
                     var td = $(this);
                     grid[y].push(new Cell(td, x, y));
-                    td.html('a');
+                    // td.html('a');
                     ++x;
                 });
 
@@ -119,10 +150,16 @@ function Grid(parentId) {
 
         for (i = y; i < yh; ++i) {
             for (j = x; j < xw; ++j) {
-                f.apply(grid[i][j]);
+                f.apply(grid[i][j], []);
             }
         }
     };
+
+    this.each = function (f) {
+        self.rectangleSelection(
+            0, 0, self.width, self.height, f
+        );
+    }
 }
 
 Grid.constructor = Grid;

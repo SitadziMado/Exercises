@@ -23,8 +23,7 @@ function changeGame(name) {
         infoBlock: '#div-info',
         width: 18,
         height: 12,
-        time: 60,
-        density: 6
+        time: 60
     };
 
     if (name === 'SearchGame') {
@@ -34,14 +33,6 @@ function changeGame(name) {
     } else if (name === 'TripleGame') {
         game = new TripleGame(config);
     }
-
-    /*var settings = new Settings('#div-info');
-
-    settings.addSelect('name', 'надпись ', function () {
-        alert(this.value);
-    }, ['fst', 'snd']);
-
-    settings.addParagraph('Para', 'Количество правильных: ', undefined, []);*/
 }
 
 function document_onKeyDown(e) {

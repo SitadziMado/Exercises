@@ -1,6 +1,10 @@
 function Game(config) {
     var grid = new Grid(config.gameBlock);
 
+    config.font = 'standard';
+    config.fontSize = 20;
+    config.color = 'standard';
+
     var w = config.width || 1;
     var h = config.height || 1;
     var selX = config.selectionX || 0;
@@ -30,8 +34,10 @@ function Game(config) {
     var divInfo = $(config.infoBlock);
 
     var settings = new Settings({ parent: divInfo });
-    var goals = [];
+    var goals = config.goals || [];
     // var statisticsLabel = $('#statistics-label');
+
+    var rnd = new Random();
 
     function inBounds(value, lower, upper) {
         if (value < lower) {
@@ -75,11 +81,36 @@ function Game(config) {
         }
     }
 
-    //
-    function fillInfo() {
-        divInfo.append('<p>' + (config.description || 'Здесь будет описание игры') + '</p>');
-        divInfo.append('<p>Статистика: </p>');
-        divInfo.append('<p id="statistics-label">');
+    function nextFont(n) {
+        if (n === undefined) {
+            n = rnd.int(0, 4);
+        }
+
+        return 'font-' + n.toString();
+    }
+
+    function nextColor() {
+        return rnd.choice([
+            '#f44336',
+            '#E91E63',
+            '#9C27B0',
+            '#673AB7',
+            '#3F51B5',
+            '#2196F3',
+            '#03A9F4',
+            '#00BCD4',
+            '#009688',
+            '#4CAF50',
+            '#8BC34A',
+            '#CDDC39',
+            '#FFEB3B',
+            '#FFC107',
+            '#FF9800',
+            '#FF5722',
+            '#795548',
+            '#9E9E9E',
+            '#607D8B'
+        ]);
     }
 
     Object.defineProperties(
@@ -189,6 +220,92 @@ function Game(config) {
                 },
                 set: function (value) {
                     config.goalCount = value;
+                }
+            },
+            font: {
+                get: function () {
+                    return config.font;
+                },
+                set: function (value) {
+                    function clearFonts() {
+                        for (var i = 0; i < 5; ++i) {
+                            this.span.removeClass(nextFont(i));
+                        }
+                    }
+                    var singleFont = nextFont();
+                    var fontFuncs = {
+                        standard: function () {
+                            // this.span.css('font-family', '');
+                            clearFonts.apply(this, []);
+                        },
+                        single: function () {
+                            // this.span.css('font-family', singleFont);
+                            clearFonts.apply(this, []);
+                            this.span.addClass(singleFont);
+                        },
+                        random: function () {
+                            clearFonts.apply(this, []);
+                            this.span.addClass(nextFont());
+                        }
+                    };
+
+                    var f = fontFuncs[value];
+
+                    if (!f) {
+                        throw new Error('Неверный идентификатор шрифта.');
+                    }
+
+                    self.grid.each(f);
+
+                    config.font = value;
+                }
+            },
+            fontSize: {
+                get: function () {
+                    return config.fontSize;
+                },
+                set: function (value) {
+                    self.grid.each(function () {
+                        this.span.css('font-size', value);
+                        this.td.css({
+                            width: value,
+                            height: value
+                        });
+                    });
+                    config.fontSize = value;
+                }
+            },
+            color: {
+                get: function () {
+                    return config.color;
+                },
+                set: function (value) {
+                    var used = {};
+                    var colorFuncs = {
+                        standard: function () {
+                            this.span.css('color', '');
+                        },
+                        symbolBased: function () {
+                            if (!used[this.text]) {
+                                used[this.text] = nextColor();
+                            }
+
+                            this.span.css('color', used[this.text]);
+                        },
+                        random: function () {
+                            this.span.css('color', nextColor());
+                        }
+                    };
+
+                    var f = colorFuncs[value];
+
+                    if (!f) {
+                        throw new Error('Неверный идентификатор цвета поля.');
+                    }
+
+                    self.grid.each(f);
+
+                    config.color = value;
                 }
             }
         }
@@ -401,6 +518,40 @@ Game.prototype.fillInfo = function () {
         }
     );
 
+    this.settings.addComboBox(
+        'fonts',
+        'Шрифты: ', {
+            standard: 'Стандарт',
+            single: 'Один',
+            random: 'Случайный'
+        }, function () {
+            self.font = this.value;
+            // self.restart();
+        }
+    );
+
+    this.settings.addComboBox(
+        'fontSize',
+        'Размер шрифта: ',
+        { 20: 'Малый', 24: 'Средний', 28: 'Большой' },
+        function () {
+            self.fontSize = +this.value;
+            // self.restart();
+        }
+    );
+
+    this.settings.addComboBox(
+        'colors',
+        'Цвет символов: ', {
+            standard: 'Автоматически',
+            symbolBased: 'В зависимости от символа',
+            random: 'Случайный'
+        }, function () {
+            self.color = this.value;
+            // self.restart();
+        }
+    );
+
     this.settings.addButton(
         'start',
         'Начать игру',
@@ -435,6 +586,12 @@ Game.prototype.generate = function (width, height) {
 
     this.selectionX = 0;
     this.selectionY = 0;
+};
+
+Game.prototype.resetField = function () {
+    this.color = this.color;
+    this.font = this.font;
+    this.fontSize = this.fontSize;
 };
 
 Game.prototype.restart = function (width, height) {

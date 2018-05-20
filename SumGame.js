@@ -1,9 +1,9 @@
 function SumGame(config) {
     config.selectionWidth = config.selectionWidth || 2;
     config.selectionHeight = config.selectionHeight || 1;
-    config.description = 'Нажмите клавишу &lt;1&gt;, если сумма равна 10, &lt;2&gt; иначе.';
     config.goalCount = 1;
     config.chances = 55;
+    config.goals = [ 9 ];
 
     var self = this;
 
@@ -33,7 +33,7 @@ function SumGame(config) {
             selected.push(this);
         });
 
-        var match = sum === this.goals[0];
+        var match = sum === self.goals[0];
         var markFunc = function () {};
         var amount = 1;
 
@@ -84,8 +84,6 @@ SumGame.prototype.generate = function (width, height) {
     var self = this;
     var rnd = new Random();
 
-    this.goals = [10];
-
     var fillers = [];
 
     for (var i = 0; i < this.height; ++i) {
@@ -119,12 +117,27 @@ SumGame.prototype.generate = function (width, height) {
             this.text = fillers[idx++];
         }
     );
+
+    this.description =
+        'Нажмите клавишу &lt;1&gt;, если сумма равна ' + this.goals[0].toString() + ', &lt;2&gt; иначе.';
+
+    this.resetField();
 };
 
 SumGame.prototype.fillInfo = function () {
     Game.prototype.fillInfo.apply(this, arguments);
 
     var self = this;
+
+    this.settings.addComboBox(
+        'goal',
+        'Целевая сумма: ',
+        { 9: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14 },
+        function () {
+            self.goals[0] = +this.value;
+            self.restart();
+        }
+    );
 
     this.settings.addComboBox(
         'chances',
