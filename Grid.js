@@ -49,8 +49,10 @@ function Cell(td, x, y) {
 
         if (value) {
             td.addClass('highlighted');
+            //span.addClass('highlighted');
         } else {
             td.removeClass('highlighted');
+            //span.removeClass('highlighted');
         }
     };
 }
@@ -159,7 +161,15 @@ function Grid(parentId) {
         self.rectangleSelection(
             0, 0, self.width, self.height, f
         );
-    }
+    };
+
+    this.each(function () {
+        this.highlight();
+    });
+
+    this.each(function () {
+        this.highlight(false);
+    });
 }
 
 Grid.constructor = Grid;

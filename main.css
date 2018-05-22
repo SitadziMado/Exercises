@@ -28,6 +28,24 @@
     font-size: 16px;
 }
 
+#div-grid {
+    padding: 3px;
+}
+
+#div-grid table {
+    border-collapse: collapse;
+}
+
+#div-grid td {
+    border: solid 1px;
+    box-sizing: border-box;
+    table-layout: fixed;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
 
 td.miss {
     color: orange;
@@ -38,23 +56,17 @@ td.wrong {
 }
 
 td.right {
-    color: greenyellow;
+    color: blue;
 }
 
 td.highlighted {
+    border-left: none;
+    border-right: none;
+}
+
+#div-grid td.highlighted {
+    border: solid 3px;
     color: lime;
-}
-
-table {
-    border-collapse: collapse;
-}
-
-#div-grid td {
-    border: solid 1px;
-    table-layout: fixed;
-    width: 20px;
-    height: 20px;
-    text-align: center;
 }
 
 ul.menu {
