@@ -78,10 +78,10 @@ TripleGame.prototype.generate = function (width, height) {
     );
 
     this.description =
-        'Нажмите клавишу ' +
-        '&lt;1&gt; для символа "' + this.goals[0] + '", ' +
-        '&lt;2&gt; для символа "' + this.goals[1] + '", ' +
-        '&lt;3&gt; для символа "' + this.goals[2] + '", ' +
+        'Нажмите клавишу <br>' +
+        '&lt;1&gt; для символа "' + this.goals[0] + '", <br>' +
+        '&lt;2&gt; для символа "' + this.goals[1] + '", <br>' +
+        '&lt;3&gt; для символа "' + this.goals[2] + '", <br>' +
         '&lt;Вправо&gt; иначе.';
 
     this.resetField();

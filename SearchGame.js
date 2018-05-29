@@ -138,8 +138,9 @@ SearchGame.prototype.generate = function (width, height) {
         this.advance(this.selectionHeight, true);
     }
 
-    this.description = 'Задача - нажимать клавишу &lt;1&gt;, если в выделении есть символ "' +
-        this.goals[0] + '" или "' + this.goals[1] + '", нажимать &lt;2&gt; иначе.';
+    this.description = 'Задача - нажимать клавишу &lt;1&gt;, <br>' +
+        'если в выделении есть символ "' + this.goals[0] + '" или "' + this.goals[1] + '", <br>' +
+        'нажимать &lt;2&gt; иначе.';
 
     this.selectionX = 0;
     this.selectionY = 0;

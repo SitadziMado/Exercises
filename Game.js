@@ -493,9 +493,9 @@ Game.prototype.selection = function (f) {
 Game.prototype.fillInfo = function () {
     var self = this;
 
+    this.settings.addLabel('timeLeft', 'Осталось времени: ', formatSeconds(this.time));
     this.settings.addLabel('caption', this.description);
     this.settings.addLabel('statistics', 'Статистика: ', 'задание не начато');
-    this.settings.addLabel('timeLeft', 'Осталось времени: ', formatSeconds(this.time));
 
     this.settings.addComboBox(
         'size',

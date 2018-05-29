@@ -125,3 +125,27 @@ button.control {
 .font-4 {
     font-family: "Country Western", "Times New Roman", Times, serif;
 }
+
+#div-grid {
+    margin: 0;
+}
+
+#div-info button {
+    background-color: #F39200;
+    border: none;
+    color: white;
+    padding: 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    /*margin-left: 33%;*/
+    margin-top: 2px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+#div-info button:hover {
+    background-color: #FFAC1A;
+}

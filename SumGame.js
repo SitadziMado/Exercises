@@ -119,7 +119,9 @@ SumGame.prototype.generate = function (width, height) {
     );
 
     this.description =
-        'Нажмите клавишу &lt;1&gt;, если сумма равна ' + this.goals[0].toString() + ', &lt;2&gt; иначе.';
+        'Нажмите клавишу &lt;1&gt;, <br>' +
+        'если сумма равна ' + this.goals[0].toString() + ', <br>' +
+        '&lt;2&gt; иначе.';
 
     this.resetField();
 };
